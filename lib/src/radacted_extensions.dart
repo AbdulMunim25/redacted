@@ -365,41 +365,49 @@ class _RedactedFillWidget extends StatefulWidget {
   State<_RedactedFillWidget> createState() => __RedactedFillWidgetState();
 }
 
-class __RedactedFillWidgetState extends State<_RedactedFillWidget> {
+class __RedactedFillWidgetState extends State<_RedactedFillWidget>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<Color?> _animation;
+
   @override
   void initState() {
-    Future.delayed(
-        widget.configuration.animationDuration ??
-            const Duration(milliseconds: 800), () {
-      setState(() {
-        colored = !colored;
-      });
-    });
     super.initState();
+
+    // Initialize the AnimationController
+    _controller = AnimationController(
+      duration:
+          widget.configuration.animationDuration ?? const Duration(seconds: 2),
+      vsync: this,
+    )..repeat(reverse: true);
+
+    // Define the color animation
+    final color = widget.configuration.redactedColor ?? Colors.grey;
+    _animation = ColorTween(
+      begin: color.withAlpha(200),
+      end: color.withAlpha(50),
+    ).animate(_controller);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return _buildGlowWidget();
-  }
-
-  bool colored = false;
-  Widget _buildGlowWidget() {
-    var color = widget.configuration.redactedColor;
-
-    return AnimatedContainer(
-      duration: widget.configuration.animationDuration ??
-          const Duration(milliseconds: 800),
-      margin: widget.child.margin,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        color: colored ? color!.withAlpha(50) : color!.withAlpha(200),
-      ),
-      child: widget.child,
-      onEnd: () {
-        setState(() {
-          colored = !colored;
-        });
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (context, child) {
+        return Container(
+          margin: widget.child.margin,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            color: _animation.value,
+          ),
+          child: widget.child,
+        );
       },
     );
   }

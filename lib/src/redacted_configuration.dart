@@ -4,7 +4,7 @@ class RedactedConfiguration {
   bool autoFillTexts;
   String autoFillText;
   Color? redactedColor = Colors.grey.shade400.withAlpha(100);
-  Duration? animationDuration = const Duration(seconds: 1);
+  Duration? animationDuration = const Duration(milliseconds: 800);
 
   RedactedConfiguration({
     this.autoFillText =
