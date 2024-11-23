@@ -368,10 +368,10 @@ class _RedactedFillWidget extends StatefulWidget {
 class __RedactedFillWidgetState extends State<_RedactedFillWidget> {
   @override
   void initState() {
-    Future.delayed(widget.configuration.animationDuration, () {
-      setState(() {
+    Future.delayed(widget.configuration.animationDuration ?? const Duration(milliseconds: 800), () {
+      // setState(() {
         colored = !colored;
-      });
+      // });
     });
     super.initState();
   }
@@ -386,7 +386,7 @@ class __RedactedFillWidgetState extends State<_RedactedFillWidget> {
     var color = widget.configuration.redactedColor;
 
     return AnimatedContainer(
-      duration: widget.configuration.animationDuration,
+      duration: widget.configuration.animationDuration ?? const Duration(milliseconds: 800),
       margin: widget.child.margin,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
